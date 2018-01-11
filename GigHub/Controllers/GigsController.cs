@@ -42,15 +42,22 @@ namespace GigHub.Controllers
         public ActionResult Create(GigFormViewModel viewModel)
         {
 
-            //var artistId = User.Identity.GetUserId();
-            //var artist = _context.Users.Single(u => u.Id == artistId);
-            //var genre = _context.Genres.Single(u => u.Id == viewModel.Genre);
+            //if not valid answers then return to create view with the data passed to this method 'viewModel'
+            // when it returns to the create view all inputs will be displayed in the input fields along with the validation message.
+
+            if (!ModelState.IsValid)
+            {
+                //before returning the view set the gendre property in viewmodel
+                viewModel.Genres = _context.Genres.ToList();
+                return View("Create", viewModel);
+            }
+
 
             var gig = new Gig
             {
                 ArtistId = User.Identity.GetUserId(),
                 //DateTime = DateTime.Parse(string.Format("{0} {1}", viewModel.Date, viewModel.Time)),
-                DateTime = viewModel.DateTime,
+                DateTime = viewModel.GetDateTime(),
                 GenreId = viewModel.Genre,
                 Venue = viewModel.Venue
 
